@@ -1,31 +1,37 @@
-name: Auto Deploy To-Do App
+name: Auto Deploy To-Do App  #워크플로 이름 (Actions 탭에서 표시됨)
 
 on:
   push:
     branches:
-      - main  # main 브랜치에 push 될 때마다 실행됨
+      - main  #main 브랜치에 push 될 때마다 자동 실행됨
 
 jobs:
   deploy:
-    runs-on: self-hosted  # VM에서 실행 중인 GitHub Runner
+    runs-on: self-hosted  #내 서버(VM)에 설치한 self-hosted runner에서 실행
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+        # GitHub에서 현재 리포지토리 코드를 runner에 다운로드
 
       - name: Kill containers using port 80
         run: |
           docker ps --filter "publish=80" --format "{{.ID}}" | xargs -r docker stop
           docker ps -a --filter "publish=80" --format "{{.ID}}" | xargs -r docker rm
+        #이미 포트 80을 사용 중인 컨테이너가 있다면 강제로 중지하고 삭제 (중복 방지)
 
       - name: Build Docker image
         run: docker build -t todo-app .
+        #현재 디렉토리에 있는 Dockerfile을 기반으로 todo-app 이미지 빌드
 
       - name: Stop previous container (if exists)
         run: |
           docker stop todo-app || true
           docker rm todo-app || true
+        #이전에 실행 중이던 todo-app 컨테이너가 있으면 중지하고 삭제 (없어도 무시)
 
       - name: Run new Docker container
         run: docker run -d -p 80:80 --name todo-app todo-app
-
+        # 새 컨테이너를 백그라운드로 실행
+        #외부 포트 80 → 내부 컨테이너 포트 80 연결
+        #컨테이너 이름은 todo-app, 이미지도 todo-app 사용
