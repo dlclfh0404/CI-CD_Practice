@@ -1,4 +1,4 @@
-name: Auto Deploy To-Do App
+name: Auto Deploy To-Do App (Apache)
 
 on:
   push:
@@ -13,14 +13,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Build Docker image
-        run: docker build -t todo-app .
-
-      - name: Stop previous container (if exists)
+      - name: Deploy static files to Apache web root
         run: |
-          docker stop todo-app || true
-          docker rm todo-app || true
+          sudo rm -rf /var/www/html/* /var/www/html/.* 2>/dev/null || true
+          sudo cp -r public/* /var/www/html/
+          sudo chown -R www-data:www-data /var/www/html
+          sudo systemctl restart apache2
 
-      - name: Run new Docker container
-        run: docker run -d -p 27080:80 --name todo-app todo-app
 
