@@ -1,0 +1,32 @@
+name: Auto Deploy Nginx Web App  # 워크플로 이름
+
+on:
+  push:
+    branches:
+      - main  # main 브랜치에 push 될 때마다 실행됨
+
+jobs:
+  deploy:
+    runs-on: self-hosted  # 내가 설치한 러너(VM)에서 실행
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3  # 내 GitHub 코드 리포지토리를 체크아웃
+
+      - name: Build Docker Image (no cache)
+        run: docker build --no-cache -t todo-nginx .  
+        # Dockerfile 기준으로 이미지 생성 코드가 수정될 수 도 있기에 항상 새로 빌드 되도록
+
+      - name: Stop Previous Container (if running)
+        run: |
+          docker stop todo-nginx || true  
+          # 기존 컨테이너 종료 (없어도 오류 안 나게)
+          docker rm todo-nginx || true      
+          # 기존 컨테이너 삭제 (없어도 오류 안 나게)
+
+      - name: Run New Nginx Container
+        run: |
+          docker run -d \                          # 백그라운드 실행
+            -p 27080:80 \                             # 호스트 포트 27080 → 컨테이너 포트 80 연결
+            --name todo-nginx \                    # 컨테이너 이름 설정
+            todo-nginx                             # 방금 빌드한 이미지를 기반으로 컨테이너 실행
