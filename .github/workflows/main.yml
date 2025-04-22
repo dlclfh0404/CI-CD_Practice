@@ -27,6 +27,6 @@ jobs:
       - name: Run New Nginx Container
         run: |
           docker run -d \                          # 백그라운드 실행
-            -p 27080:80 \                             # 호스트 포트 27080 → 컨테이너 포트 80 연결
+            -p 80:80 \                             # 호스트 포트 27080 → 컨테이너 포트 80 연결
             --name todo-nginx \                    # 컨테이너 이름 설정
             todo-nginx                             # 방금 빌드한 이미지를 기반으로 컨테이너 실행
