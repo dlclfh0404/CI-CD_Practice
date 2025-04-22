@@ -27,5 +27,5 @@ jobs:
           docker rm todo-app || true
 
       - name: Run new Docker container
-        run: docker run -d -p 27080:80 --name todo-app todo-app
+        run: docker run -d -p 80:80 --name todo-app todo-app
 
