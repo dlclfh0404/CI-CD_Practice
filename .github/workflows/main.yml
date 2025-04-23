@@ -16,8 +16,8 @@ jobs:
 
       - name: containers kill and stop
         run: |
-          docker stop $(docker ps -a) && docker rm $(docker ps -aq)
-        #현재 실행 중인 모든 컨테이너 ID를 찾아 중지하고 중지된 것도 포함해서 삭제하
+          docker rm -f $(docker ps -q -f publish=80)
+        #모든 컨테이너 중 호스트의 80번 포트 사용 중인 컨테이너 강제 중지하고 삭제하기
 
       - name: Build Docker image
         run: docker build -t todo-app .
