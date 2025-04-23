@@ -19,6 +19,10 @@ body {
   margin-bottom: 20px;
 }
 
+h1 {
+  text-align: center;
+}
+
 #todo-input {
   flex: 1;
   padding: 8px;
