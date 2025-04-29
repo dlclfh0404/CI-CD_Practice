@@ -1,4 +1,8 @@
 FROM nginx:latest
 
-#내가 만든 정적파일들을 nginx가 서빙하는 폴더로 복사한다
-COPY ./public/ /usr/share/nginx/html
+# 1. 기본 static 파일 복사 -> To-Do 앱
+COPY ./public/ /usr/share/nginx/html/
+
+# 2. Codee 리포트 복사 (덮어쓰기 또는 하위 경로로 복사 가능)
+COPY ./out/ /usr/share/nginx/html/report/
+
