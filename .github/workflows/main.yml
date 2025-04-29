@@ -18,8 +18,8 @@ jobs:
 
       - name: Install dependencies (bear, gcc)
         run: |
-          sudo apt update
-          sudo apt install -y bear gcc
+          apt update
+          apt install -y bear gcc
         # bear (컴파일 감지) + gcc (C 컴파일러) 설치
 
       - name: Build C project with bear
