@@ -1,36 +1,62 @@
-name: Auto Deploy To-Do App  #워크플로 이름 (Actions 탭에서 표시됨)
+name: Auto Deploy To-Do App + Codee Report
 
 on:
   push:
     branches:
-      - main  #main 브랜치에 push 될 때마다 자동 실행됨
+      - main
+      # main 브랜치에 push될 때 자동 실행
 
 jobs:
   deploy:
-    runs-on: self-hosted  #내 서버(VM)에 설치한 self-hosted runner에서 실행
+    runs-on: self-hosted
+    # 내 서버(VM)에 설치된 GitHub Runner 사용
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-        # GitHub에서 현재 리포지토리 코드를 runner에 다운로드
+        # GitHub 리포지토리 코드를 체크아웃
 
-      - name: Stop and remove any container using port 80
-        run: docker rm -f $(docker ps -q -f publish=80) || true
-        # 80포트 쓰는 컨테이너가 있다면 전부 강제 중지+삭제 (없으면 무시)
+      - name: Install dependencies (bear, gcc)
+        run: |
+          sudo apt update
+          sudo apt install -y bear gcc
+        # bear (컴파일 감지) + gcc (C 컴파일러) 설치
 
+      - name: Build C project with bear
+        run: |
+          cd src
+          bear -- make
+        # src/ 폴더에서 bear로 컴파일 감시 → compile_commands.json 생성
 
-      - name: Stop previous container (if exists)
+      - name: Generate Codee HTML report
+        run: |
+          codee report -p src/compile_commands.json --out-dir out
+        # Codee 리포트를 out/ 폴더에 생성
+
+      - name: Build Docker Image
+        run: docker build --no-cache -t codee-report .
+        # Dockerfile로 새 이미지 생성
+
+      - name: Stop previous todo-app container (if exists)
         run: |
           docker stop todo-app || true
           docker rm todo-app || true
-        #이전에 실행 중이던 todo-app 컨테이너가 있으면 중지하고 삭제 (없어도 무시)
+        # todo-app 컨테이너 있으면 중지 + 삭제 (없어도 무시)
 
-      - name: Build Docker image
-        run: docker build --no-cache -t todo-app .
-        #새로 빌드하기 위해 --no-cache 사용
+      - name: Stop previous codee-report container (if exists)
+        run: |
+          docker stop codee-report || true
+          docker rm codee-report || true
+        # codee-report 컨테이너 있으면 중지 + 삭제 (없어도 무시)
 
-      - name: Run new Docker container
-        run: docker run -d -p 80:80 --name todo-app todo-app
-        # 새 컨테이너를 백그라운드로 실행
-        #외부 포트 80 → 내부 컨테이너 포트 80 연결
-        #컨테이너 이름은 todo-app, 이미지도 todo-app 사용
+      - name: Run new todo-app container
+        run: |
+          docker run -d -p 27080:80 --name todo-app codee-report
+        # 27080포트에 todo-app 컨테이너 실행
+        # 같은 이미지를 사용하지만 포트만 다르게 설정
+
+      - name: Run new codee-report container
+        run: |
+          docker run -d -p 80:80 --name codee-report codee-report
+        # 80포트에 codee-report 컨테이너 실행
+
