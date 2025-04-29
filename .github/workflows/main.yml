@@ -24,8 +24,10 @@ jobs:
 
       - name: Generate Codee HTML report
         run: |
+          export PATH=$PATH:/home/ptech/codee-2025.2-linux-x86_64/bin
           codee report -p src/compile_commands.json --out-dir out
-        # Codee 리포트를 out/ 폴더에 생성
+        # 경로를 직접설정한 후 html report 실행
+
 
       - name: Build Docker Image
         run: docker build --no-cache -t codee-report .
