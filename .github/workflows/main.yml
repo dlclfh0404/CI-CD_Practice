@@ -18,7 +18,7 @@ jobs:
 
       - name: Build C project with bear
         run: |
-          cd CI-CD_Pratctice/src
+          cd src
           bear -- make
         # src/ 폴더에서 bear로 컴파일 감시 → compile_commands.json 생성
 
