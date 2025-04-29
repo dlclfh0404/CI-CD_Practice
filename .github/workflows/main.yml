@@ -25,7 +25,7 @@ jobs:
       - name: Generate Codee HTML report
         run: |
           export PATH=$PATH:/home/ptech/codee-2025.2-linux-x86_64/bin
-          codee report --fast -p src/compile_commands.json --out-dir out
+          codee report --quick -p src/compile_commands.json --out-dir out
         # 경로를 직접설정한 후 html report 실행
 
 
