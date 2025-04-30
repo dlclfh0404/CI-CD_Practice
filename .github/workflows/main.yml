@@ -30,7 +30,7 @@ jobs:
 
 
       - name: Build Docker Image
-        run: docker build --no-cache -t codee-report .
+        run: docker build --no-cache -t codee-report-apache .
         # Dockerfile로 새 이미지 생성
 
       - name: Stop previous todo-app container (if exists)
@@ -41,18 +41,18 @@ jobs:
 
       - name: Stop previous codee-report container (if exists)
         run: |
-          docker stop codee-report || true
-          docker rm codee-report || true
+          docker stop codee-report-apache || true
+          docker rm codee-report-apache || true
         # codee-report 컨테이너 있으면 중지 + 삭제 (없어도 무시)
 
       - name: Run new todo-app container
         run: |
-          docker run -d -p 27080:80 --name todo-app codee-report
+          docker run -d -p 27080:80 --name todo-app codee-report-apache
         # 27080포트에 todo-app 컨테이너 실행
         # 같은 이미지를 사용하지만 포트만 다르게 설정
 
       - name: Run new codee-report container
         run: |
-          docker run -d -p 80:80 --name codee-report codee-report
-        # 80포트에 codee-report 컨테이너 실행
+          docker run -d -p 8090:80 --name codee-report codee-report-apache
+        # 8090포트에 codee-report 컨테이너 실행
 
