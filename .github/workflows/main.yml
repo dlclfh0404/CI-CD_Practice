@@ -47,7 +47,7 @@ jobs:
 
       - name: Run new todo-app container
         run: |
-          docker run -d -p 27080:80 --name todo-app codee-report-apache
+          docker run -d -p 27080:80 --name todo-app
         # 27080포트에 todo-app 컨테이너 실행
         # 같은 이미지를 사용하지만 포트만 다르게 설정
 
