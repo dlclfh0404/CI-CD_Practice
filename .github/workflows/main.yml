@@ -28,6 +28,11 @@ jobs:
           codee report src/compile_commands.json --out-dir out & sleep 30 && pkill -f "codee report"
         # 경로를 직접 설정한 후 HTML 리포트 생성
 
+      - name: Auto-generate Makefile for all C files
+        run: |
+          echo -e "all:\n\tgcc -c *.c" > src/makefile
+        # src 폴더 내 모든 C파일을 자동 컴파일하는 makefile 생성 
+
       - name: Build unified Apache Docker Image
         run: docker build --no-cache -t unified-app .
         # Dockerfile로 하나의 Apache 이미지 생성 (To-Do + Codee 리포트 통합)
