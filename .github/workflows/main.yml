@@ -24,7 +24,7 @@ jobs:
       - name: Generate new Codee HTML report
         run: |
           export PATH=$PATH:/home/ptech/codee-2025.2-linux-x86_64/bin
-          codee report -p src/compile_commands.json --out-dir out
+          codee report -p src/compile_commands.json --out-dir out & sleep 30
 
       - name: Stop previous unified-app container (if exists)
         run: |
