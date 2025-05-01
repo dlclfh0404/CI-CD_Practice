@@ -4,50 +4,36 @@ on:
   push:
     branches:
       - main
-      # main 브랜치에 push될 때 자동 실행
 
 jobs:
   deploy:
     runs-on: self-hosted
-    # 내 서버(VM)에 설치된 GitHub Runner 사용
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-        # GitHub 리포지토리 코드를 체크아웃
 
-      - name: Build C project with bear
+      - name: Clean and regenerate compile_commands.json
         run: |
-          cd src
-          bear -- make
-        # src/ 폴더에서 bear로 컴파일 감시 → compile_commands.json 생성
-      
+          rm -f src/compile_commands.json
+          cd src && bear -- make && cd ..
+
       - name: Clean previous Codee report
         run: rm -rf out
-        # out폴더 삭제 초기화 
 
-      - name: Generate Codee HTML report
+      - name: Generate new Codee HTML report
         run: |
           export PATH=$PATH:/home/ptech/codee-2025.2-linux-x86_64/bin
-          codee report src/compile_commands.json --out-dir out & sleep 30 && pkill -f "codee report"
-        # 경로를 직접 설정한 후 HTML 리포트 생성
+          codee report -p src/compile_commands.json --out-dir out
 
-      - name: Auto-generate Makefile for all C files
-        run: |
-          echo -e "all:\n\tgcc -c *.c" > src/makefile
-        # src 폴더 내 모든 C파일을 자동 컴파일하는 makefile 생성 
-
-      - name: Build unified Apache Docker Image
-        run: docker build --no-cache -t unified-app .
-        # Dockerfile로 하나의 Apache 이미지 생성 (To-Do + Codee 리포트 통합)
-
-      - name: Stop previous unified container (if exists)
+      - name: Stop previous unified-app container (if exists)
         run: |
           docker stop unified-app || true
           docker rm unified-app || true
-        # 기존 unified-app 컨테이너 중지 및 삭제 (있으면)
 
-      - name: Run unified Apache container on port 80
+      - name: Build new Docker image without cache
+        run: docker build --no-cache -t unified-app .
+
+      - name: Run unified-app container on alternate port
         run: docker run -d -p 80:80 --name unified-app unified-app
-        # 외부 포트 80으로 서빙 → http://<server-ip>/ 및 /report/ 접근 가능
 
