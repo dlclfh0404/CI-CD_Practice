@@ -3,12 +3,18 @@
     "arguments": [
       "/usr/bin/gcc",
       "-c",
-      "-o",
-      "app",
       "main.c"
     ],
     "directory": "/home/ptech/CI-CD_Practice/src",
-    "file": "/home/ptech/CI-CD_Practice/src/main.c",
-    "output": "/home/ptech/CI-CD_Practice/src/app"
+    "file": "/home/ptech/CI-CD_Practice/src/main.c"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-c",
+      "multiply.c"
+    ],
+    "directory": "/home/ptech/CI-CD_Practice/src",
+    "file": "/home/ptech/CI-CD_Practice/src/multiply.c"
   }
 ]

@@ -1,8 +1,9 @@
-FROM nginx:latest
+FROM httpd:latest
 
-# 1. 기본 static 파일 복사 -> To-Do 앱
-COPY ./public/ /usr/share/nginx/html/
+# To-Do 앱 정적 파일 루트 경로에 복사
+COPY ./public/ /usr/local/apache2/htdocs/
 
-# 2. Codee 리포트 복사 (덮어쓰기 또는 하위 경로로 복사 가능)
-COPY ./out/ /usr/share/nginx/html/report/
+# Codee 리포트 복사
+COPY ./report_output/ /usr/local/apache2/htdocs/report/
+
 
