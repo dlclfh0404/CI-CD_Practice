@@ -31,6 +31,13 @@ jobs:
           docker stop unified-app || true
           docker rm unified-app || true
 
+      - name: Append cache-busting version query to HTML
+        run: |
+          VERSION=$(date +%s)
+          sed -i "s|style.css?v=[0-9]*|style.css?v=$VERSION|g" public/index.html || true
+          sed -i "s|script.js?v=[0-9]*|script.js?v=$VERSION|g" public/index.html || true
+
+
       - name: Build new Docker image without cache
         run: docker build --no-cache -t unified-app .
 
