@@ -39,6 +39,6 @@ jobs:
         # 기존 unified-app 컨테이너 중지 및 삭제 (있으면)
 
       - name: Run unified Apache container on port 80
-        run: docker run -d -p 27080:80 --name unified-app unified-app
+        run: docker run -d -p 80:80 --name unified-app unified-app
         # 외부 포트 80으로 서빙 → http://<server-ip>/ 및 /report/ 접근 가능
 
