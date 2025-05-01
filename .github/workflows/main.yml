@@ -26,17 +26,16 @@ jobs:
           export PATH=$PATH:/home/ptech/codee-2025.2-linux-x86_64/bin
           codee report -p src/compile_commands.json --out-dir out & sleep 30
 
-      - name: Stop previous unified-app container (if exists)
-        run: |
-          docker stop unified-app || true
-          docker rm unified-app || true
-
       - name: Append cache-busting version query to HTML
         run: |
           VERSION=$(date +%s)
           sed -i "s|style.css?v=[0-9]*|style.css?v=$VERSION|g" public/index.html || true
           sed -i "s|script.js?v=[0-9]*|script.js?v=$VERSION|g" public/index.html || true
 
+      - name: Stop and remove unified-app 
+        run: |
+          docker stop unified-app || true
+          docker rm unified-app || true
 
       - name: Build new Docker image without cache
         run: docker build --no-cache -t unified-app .
