@@ -4,6 +4,6 @@ FROM httpd:latest
 COPY ./public/ /usr/local/apache2/htdocs/
 
 # Codee 리포트 복사
-COPY ./report_output/ /usr/local/apache2/htdocs/report/
+COPY ./out/ /usr/local/apache2/htdocs/report/
 
 
