@@ -31,28 +31,16 @@ jobs:
 
       - name: Build Docker Image
         run: |
-          docker build --no-cache -t codee-report-apache .
-          docker build --no-cache -t todo-app .
+          docker build --no-cache -t unified-app .
         # Dockerfile로 새 이미지 생성
 
-      - name: Stop previous todo-app container (if exists)
+      - name: Stop previous unified-app container (if exists)
         run: |
-          docker stop todo-app || true
-          docker rm todo-app || true
-        # todo-app 컨테이너 있으면 중지 + 삭제 (없어도 무시)
-
-      - name: Stop previous codee-report container (if exists)
-        run: |
-          docker stop codee-report || true
-          docker rm codee-report || true
-        # 컨테이너 이름은 codee-report로 고정
+          docker stop unified-app || true
+          docker rm unified-app || true
+        # unified-app 컨테이너 있으면 중지 + 삭제 (없어도 무시)
 
       - name: Run new todo-app container
         run: |
-          docker run -d -p 27080:80 --name todo-app todo-app
+          docker run -d -p 27080:80 --name unified-app unified-app
 
-      - name: Run new codee-report container
-        run: |
-          docker run -d -p 8090:80 --name codee-report codee-report-apache
-        # 이미지 이름: codee-report-apache
-        # 컨테이너 이름: codee-report (고정)
