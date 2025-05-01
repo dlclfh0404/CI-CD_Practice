@@ -23,7 +23,7 @@ jobs:
         # src/ 폴더에서 bear로 컴파일 감시 → compile_commands.json 생성
       
       - name: Clean previous Codee report
-        run: rm -rf src/out
+        run: rm -rf out
         # out폴더 삭제 초기화 
 
       - name: Generate Codee HTML report
