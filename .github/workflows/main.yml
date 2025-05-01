@@ -25,22 +25,20 @@ jobs:
       - name: Generate Codee HTML report
         run: |
           export PATH=$PATH:/home/ptech/codee-2025.2-linux-x86_64/bin
-          codee report src/compile_commands.json --out-dir out & sleep 30 && pkill -f "codee report" 
-        # 경로를 직접설정한 후 html report 실행
+          codee report src/compile_commands.json --out-dir out & sleep 30 && pkill -f "codee report"
+        # 경로를 직접 설정한 후 HTML 리포트 생성
 
+      - name: Build unified Apache Docker Image
+        run: docker build --no-cache -t unified-app .
+        # Dockerfile로 하나의 Apache 이미지 생성 (To-Do + Codee 리포트 통합)
 
-      - name: Build Docker Image
-        run: |
-          docker build --no-cache -t unified-app .
-        # Dockerfile로 새 이미지 생성
-
-      - name: Stop previous unified-app container (if exists)
+      - name: Stop previous unified container (if exists)
         run: |
           docker stop unified-app || true
           docker rm unified-app || true
-        # unified-app 컨테이너 있으면 중지 + 삭제 (없어도 무시)
+        # 기존 unified-app 컨테이너 중지 및 삭제 (있으면)
 
-      - name: Run new todo-app container
-        run: |
-          docker run -d -p 27080:80 --name unified-app unified-app
+      - name: Run unified Apache container on port 80
+        run: docker run -d -p 27080:80 --name unified-app unified-app
+        # 외부 포트 80으로 서빙 → http://<server-ip>/ 및 /report/ 접근 가능
 
