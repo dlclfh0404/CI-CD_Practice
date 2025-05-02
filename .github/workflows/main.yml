@@ -1,45 +1,55 @@
-name: Auto Deploy To-Do App + Codee Report
+name: Auto Deploy To-Do App + Codee Report  # 워크플로 이름 (GitHub Actions에서 표시됨)
 
 on:
   push:
     branches:
-      - main
+      - main  # main 브랜치에 push 될 때마다 이 워크플로 실행
 
 jobs:
   deploy:
-    runs-on: self-hosted
+    runs-on: self-hosted  # 사전에 구성된 VM 서버의 self-hosted GitHub Runner에서 동작
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+        # GitHub 리포지토리의 코드를 현재 실행 중인 Runner에 다운로드
 
       - name: Clean and regenerate compile_commands.json
         run: |
-          rm -f src/compile_commands.json
-          cd src && bear -- make && cd ..
+          rm -f src/compile_commands.json  # 이전에 생성된 JSON 파일 제거 (중복 방지)
+          cd src && bear -- make && cd ..  # src 폴더에서 make 실행 → bear가 컴파일 로그 기록
+        # compile_commands.json은 Codee 분석에 필요한 컴파일 정보가 들어있는 JSON 파일
 
       - name: Clean previous Codee report
         run: rm -rf out
+        # 이전에 생성된 Codee HTML 리포트(out 폴더)를 삭제
 
       - name: Generate new Codee HTML report
         run: |
-          export PATH=$PATH:/home/ptech/codee-2025.2-linux-x86_64/bin
+          export PATH=$PATH:/home/ptech/codee-2025.2-linux-x86_64/bin  # Codee 실행 경로 등록
           codee report -p src/compile_commands.json --out-dir out & sleep 30
+        # Codee로 정적 분석 리포트를 out 폴더에 생성
+        # sleep 30은 리포트 생성 대기시간 확보용 (codee report는 백그라운드에서 실행됨)
 
       - name: Append cache-busting version query to HTML
         run: |
-          VERSION=$(date +%s)
+          VERSION=$(date +%s)  # 현재 시간(초 단위)을 기준으로 버전 태그 생성
           sed -i "s|style.css?v=[0-9]*|style.css?v=$VERSION|g" public/index.html || true
           sed -i "s|script.js?v=[0-9]*|script.js?v=$VERSION|g" public/index.html || true
+        # CSS, JS 파일에 버전 쿼리 추가해 브라우저 캐시 무력화 → 매번 최신 파일로 로딩
 
-      - name: Stop and remove unified-app 
+      - name: Stop and remove unified-app
         run: |
-          docker stop unified-app || true
-          docker rm unified-app || true
+          docker stop unified-app || true  # 실행 중인 컨테이너 중지 (없으면 무시)
+          docker rm unified-app || true    # 기존 컨테이너 삭제 (없으면 무시)
+        # 동일한 이름의 컨테이너가 있으면 중지 및 삭제하여 충돌 방지
 
       - name: Build new Docker image without cache
         run: docker build --no-cache -t unified-app .
+        # Dockerfile을 기준으로 이미지 새로 빌드 (--no-cache로 캐시 없이)
 
       - name: Run unified-app container on alternate port
         run: docker run -d -p 80:80 --name unified-app unified-app
+        # 포트 80으로 웹 서비스 컨테이너 실행
+        # public/index.html 및 out/index.html(report) 포함
 

@@ -16,5 +16,14 @@
     ],
     "directory": "/home/ptech/CI-CD_Practice/src",
     "file": "/home/ptech/CI-CD_Practice/src/multiply.c"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-c",
+      "year.c"
+    ],
+    "directory": "/home/ptech/CI-CD_Practice/src",
+    "file": "/home/ptech/CI-CD_Practice/src/year.c"
   }
 ]

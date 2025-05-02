@@ -1,8 +1,8 @@
 {
  "Language summary": [
   {
-   "Total": "2",
-   "C": "2",
+   "Total": "3",
+   "C": "3",
    "C++": "0",
    "Fortran": "0"
   }
@@ -23,7 +23,7 @@
    "Category": "other",
    "Priority": "P18 (L1)",
    "AutoFixes": "",
-   "#": "2",
+   "#": "3",
    "Title": "Tune compiler optimization flags to increase the speed of the code"
   },
   {
@@ -31,19 +31,19 @@
    "Category": "",
    "Priority": "",
    "AutoFixes": "",
-   "#": "2",
+   "#": "3",
    "Title": ""
   }
  ],
  "Analysis Coverage": [
   {
-   "Elapsed time": "14 ms",
-   "Analyzed files": 2,
+   "Elapsed time": "19 ms",
+   "Analyzed files": 3,
    "Invalid files": 0,
-   "Functions": 2,
+   "Functions": 3,
    "Loops": 1,
-   "SLOCs": 20,
-   "Checkers": 2,
+   "SLOCs": 32,
+   "Checkers": 3,
    "Invocations with missing deps": 0
   }
  ]
